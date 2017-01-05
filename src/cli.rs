@@ -14,11 +14,15 @@
 use std::env;
 use index::{Line, Column};
 
+/// Default title for the window
+const DEFAULT_TITLE: &'static str = "Alacritty";
+
 /// Options specified on the command line
 pub struct Options {
     pub ref_test: bool,
     pub columns: Column,
     pub lines: Line,
+    pub title: String,
 }
 
 impl Default for Options {
@@ -27,6 +31,7 @@ impl Default for Options {
             ref_test: false,
             columns: Column(80),
             lines: Line(24),
+            title: DEFAULT_TITLE.to_owned()
         }
     }
 }
@@ -47,6 +52,10 @@ impl Options {
                         .map(|w| w.parse().map(|w| options.columns = Column(w)));
                     args_iter.next()
                         .map(|h| h.parse().map(|h| options.lines = Line(h)));
+                },
+                // Set title
+                "-t" | "--title" => {
+                    args_iter.next().map(|title| options.title = title);
                 },
                 // ignore unexpected
                 _ => (),
